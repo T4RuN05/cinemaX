@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { bookingsApi } from '@/lib/api';
-import { Calendar, Clock, MapPin, Ticket, XCircle } from 'lucide-react';
-import { format } from 'date-fns';
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { bookingsApi } from "@/lib/api";
+import { Calendar, Clock, MapPin, Ticket, XCircle } from "lucide-react";
+import { format } from "date-fns";
 
 export default function MyBookingsPage() {
   const searchParams = useSearchParams();
@@ -15,34 +15,33 @@ export default function MyBookingsPage() {
   useEffect(() => {
     fetchBookings();
 
-    // Show success message if redirected from booking
-    if (searchParams.get('success') === 'true') {
+    if (searchParams?.get("success") === "true") {
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 5000);
     }
-  }, []);
+  }, [searchParams]);
 
   const fetchBookings = async () => {
     try {
       const response = await bookingsApi.getMyBookings();
       setBookings(response.data.data);
     } catch (error) {
-      console.error('Error fetching bookings:', error);
+      console.error("Error fetching bookings:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancelBooking = async (bookingId) => {
-    if (!confirm('Are you sure you want to cancel this booking?')) return;
+    if (!confirm("Are you sure you want to cancel this booking?")) return;
 
     try {
       await bookingsApi.cancel(bookingId);
-      alert('Booking cancelled successfully');
+      alert("Booking cancelled successfully");
       fetchBookings(); // Refresh list
     } catch (error) {
-      console.error('Error cancelling booking:', error);
-      alert('Failed to cancel booking');
+      console.error("Error cancelling booking:", error);
+      alert("Failed to cancel booking");
     }
   };
 
@@ -71,16 +70,20 @@ export default function MyBookingsPage() {
         <div className="text-center py-12">
           <Ticket className="h-24 w-24 mx-auto text-gray-400 mb-4" />
           <p className="text-xl text-gray-600">No bookings yet</p>
-          <p className="text-gray-500 mt-2">Start booking your favorite movies!</p>
+          <p className="text-gray-500 mt-2">
+            Start booking your favorite movies!
+          </p>
         </div>
       ) : (
         <div className="space-y-6">
           {bookings.map((booking) => {
             const showtime = booking.showtime; // populated object
-            const movieTitle = showtime?.movieTitle || 'Unknown Movie';
-            const theatreName = showtime?.theatreId?.name || 'Unknown Theatre';
-            const showDate = showtime?.showDate ? new Date(showtime.showDate) : null;
-            const showTime = showtime?.showTime || 'N/A';
+            const movieTitle = showtime?.movieTitle || "Unknown Movie";
+            const theatreName = showtime?.theatreId?.name || "Unknown Theatre";
+            const showDate = showtime?.showDate
+              ? new Date(showtime.showDate)
+              : null;
+            const showTime = showtime?.showTime || "N/A";
 
             return (
               <div
@@ -94,14 +97,14 @@ export default function MyBookingsPage() {
                       <div>
                         <h3 className="text-xl font-bold">{movieTitle}</h3>
                         <p className="text-sm text-gray-500">
-                          Booking Ref: {booking.bookingReference || 'N/A'}
+                          Booking Ref: {booking.bookingReference || "N/A"}
                         </p>
                       </div>
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          booking.bookingStatus === 'confirmed'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
+                          booking.bookingStatus === "confirmed"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
                         }`}
                       >
                         {booking.bookingStatus?.toUpperCase()}
@@ -118,8 +121,8 @@ export default function MyBookingsPage() {
                         <Calendar className="h-4 w-4 text-gray-500" />
                         <span>
                           {showDate
-                            ? format(showDate, 'MMM d, yyyy')
-                            : 'Date not available'}
+                            ? format(showDate, "MMM d, yyyy")
+                            : "Date not available"}
                         </span>
                       </div>
 
@@ -131,9 +134,9 @@ export default function MyBookingsPage() {
 
                     <div className="mt-4">
                       <p className="text-sm text-gray-600">
-                        Seats:{' '}
+                        Seats:{" "}
                         <span className="font-semibold">
-                          {booking.seatNumbers?.join(', ') || 'N/A'}
+                          {booking.seatNumbers?.join(", ") || "N/A"}
                         </span>
                       </p>
                       <p className="text-lg font-bold text-red-500 mt-2">
@@ -148,7 +151,7 @@ export default function MyBookingsPage() {
                       View Ticket
                     </button>
 
-                    {booking.bookingStatus === 'confirmed' && (
+                    {booking.bookingStatus === "confirmed" && (
                       <button
                         onClick={() => handleCancelBooking(booking._id)}
                         className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition flex items-center gap-2"
