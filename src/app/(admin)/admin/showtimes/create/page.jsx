@@ -13,19 +13,20 @@ export default function CreateShowtimePage() {
   const [theatres, setTheatres] = useState([]);
   const [screens, setScreens] = useState([]);
   const [popularMovies] = useState([
-    { id: 278, title: 'The Shawshank Redemption' },
-    { id: 238, title: 'The Godfather' },
-    { id: 240, title: 'The Godfather Part II' },
-    { id: 424, title: "Schindler's List" },
-    { id: 19404, title: 'Dilwale Dulhania Le Jayenge' },
-    { id: 129, title: 'Spirited Away' },
-    { id: 155, title: 'The Dark Knight' },
-    { id: 497, title: 'The Green Mile' },
+    { id: 278, title: 'The Shawshank Redemption', poster: '/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg' },
+    { id: 238, title: 'The Godfather', poster: '/3bhkrj58Vtu7enYsRolD1fZdja1.jpg' },
+    { id: 240, title: 'The Godfather Part II', poster: '/hek3koDUyRQk7FIhPXsa6mT2Zc3.jpg' },
+    { id: 424, title: "Schindler's List", poster: '/sF1U4EUQS8YHUYjNl3pMGNIQyr0.jpg' },
+    { id: 19404, title: 'Dilwale Dulhania Le Jayenge', poster: '/lfRkUr7DYdHldAqi3PwdQGBRBPM.jpg' },
+    { id: 129, title: 'Spirited Away', poster: '/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg' },
+    { id: 155, title: 'The Dark Knight', poster: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg' },
+    { id: 497, title: 'The Green Mile', poster: '/8VG8fDNiy50H4FedGwdSVUPoaJe.jpg' },
   ]);
 
   const [formData, setFormData] = useState({
     movieId: '',
     movieTitle: '',
+    moviePoster: '',
     theatreId: '',
     screenId: '',
     showDate: '',
@@ -59,6 +60,8 @@ export default function CreateShowtimePage() {
     const theatre = theatres.find((t) => t._id === theatreId);
     if (theatre && theatre.screens) {
       setScreens(theatre.screens);
+    } else {
+      setScreens([]);
     }
   };
 
@@ -68,6 +71,17 @@ export default function CreateShowtimePage() {
       ...formData,
       movieId: parseInt(movieId),
       movieTitle: movie?.title || '',
+      moviePoster: movie?.poster || '',
+    });
+  };
+
+  const handleScreenChange = (screenId) => {
+    const selectedScreen = screens.find((screen) => screen._id === screenId);
+
+    setFormData({
+      ...formData,
+      screenId,
+      format: selectedScreen?.screenType || formData.format,
     });
   };
 
@@ -80,21 +94,32 @@ export default function CreateShowtimePage() {
 
     setLoading(true);
     try {
-      await showtimesApi.create({
-        ...formData,
+      const payload = {
+        movieId: Number(formData.movieId),
+        movieTitle: formData.movieTitle,
+        moviePoster: formData.moviePoster,
+        theatreId: formData.theatreId,
+        screenId: formData.screenId,
         showDate: new Date(formData.showDate),
+        showTime: formData.showTime,
+        language: formData.language,
+        format: formData.format,
         pricing: {
-          regular: formData.regularPrice,
-          premium: formData.premiumPrice,
-          vip: formData.vipPrice,
+          regular: Number(formData.regularPrice),
+          premium: Number(formData.premiumPrice),
+          vip: Number(formData.vipPrice),
         },
+      };
+
+      await showtimesApi.create({
+        ...payload,
       });
 
       alert('Showtime created successfully!');
       router.push('/admin/showtimes');
     } catch (error) {
       console.error('Error creating showtime:', error);
-      alert('Failed to create showtime: ' + error.message);
+      alert('Failed to create showtime: ' + (error.response?.data?.error || error.message));
     } finally {
       setLoading(false);
     }
@@ -102,24 +127,22 @@ export default function CreateShowtimePage() {
 
   if (!isLoaded) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-gray-900 via-black to-gray-800">
-        <Loader2 className="h-12 w-12 animate-spin text-red-500" />
+      <div className="page-shell flex min-h-screen items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-red-300" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-900 via-black to-gray-800 text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/images/cinema-bg.jpg')] bg-cover bg-center opacity-10 blur-sm"></div>
-
-      <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="max-w-3xl mx-auto backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-10 text-gray-200">
+    <div className="page-shell relative min-h-screen overflow-hidden text-white">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 sm:px-6">
+        <div className="glass-panel mx-auto max-w-3xl rounded-2xl p-10 text-zinc-200">
           {/* Header */}
           <div className="mb-8 text-center">
-            <h1 className="text-4xl font-extrabold text-white tracking-tight">
-              🎬 Create Showtime
+            <h1 className="text-4xl font-extrabold tracking-tight theme-gradient-text">
+              Create Showtime
             </h1>
-            <p className="text-gray-300 mt-2">Add a new movie showtime to your theatre</p>
+            <p className="mt-2 text-zinc-300">Add a new movie showtime to your theatre</p>
           </div>
 
           {/* Form */}
@@ -134,7 +157,7 @@ export default function CreateShowtimePage() {
                 value={formData.movieId}
                 onChange={(e) => handleMovieChange(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white/10 text-white border border-white/20 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent backdrop-blur-md"
+                className="input-glass"
               >
                 <option value="">Choose a movie...</option>
                 {popularMovies.map((movie) => (
@@ -154,7 +177,7 @@ export default function CreateShowtimePage() {
                 value={formData.theatreId}
                 onChange={(e) => handleTheatreChange(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white/10 text-white border border-white/20 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent backdrop-blur-md"
+                className="input-glass"
               >
                 <option value="">Choose a theatre...</option>
                 {theatres.map((theatre) => (
@@ -172,10 +195,10 @@ export default function CreateShowtimePage() {
               </label>
               <select
                 value={formData.screenId}
-                onChange={(e) => setFormData({ ...formData, screenId: e.target.value })}
+                onChange={(e) => handleScreenChange(e.target.value)}
                 required
                 disabled={!formData.theatreId}
-                className="w-full px-4 py-3 bg-white/10 text-white border border-white/20 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent disabled:bg-white/5 disabled:opacity-50"
+                className="input-glass disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="">Choose a screen...</option>
                 {screens.map((screen) => (
@@ -199,7 +222,7 @@ export default function CreateShowtimePage() {
                   onChange={(e) => setFormData({ ...formData, showDate: e.target.value })}
                   required
                   min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-3 bg-white/10 text-white border border-white/20 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="input-glass"
                 />
               </div>
 
@@ -213,7 +236,7 @@ export default function CreateShowtimePage() {
                   value={formData.showTime}
                   onChange={(e) => setFormData({ ...formData, showTime: e.target.value })}
                   required
-                  className="w-full px-4 py-3 bg-white/10 text-white border border-white/20 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="input-glass"
                 />
               </div>
             </div>
@@ -241,7 +264,7 @@ export default function CreateShowtimePage() {
                         }
                         required
                         min="0"
-                        className="w-full px-4 py-3 bg-white/10 text-white border border-white/20 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                        className="input-glass"
                       />
                     </div>
                   );
@@ -254,14 +277,14 @@ export default function CreateShowtimePage() {
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="flex-1 px-6 py-3 border border-white/30 text-white rounded-lg hover:bg-white/10 transition"
+                className="cta-secondary flex-1 px-6 py-3"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition disabled:bg-gray-500 disabled:cursor-not-allowed"
+                className="cta-primary flex-1 px-6 py-3 disabled:cursor-not-allowed disabled:opacity-55"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

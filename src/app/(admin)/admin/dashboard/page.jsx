@@ -24,60 +24,60 @@ export default function AdminDashboard() {
 
   if (!isLoaded || user?.publicMetadata?.role !== 'admin') {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-gray-900 to-black text-white">
-        <div className="text-xl animate-pulse">Loading Admin Panel...</div>
+      <div className="page-shell flex min-h-screen items-center justify-center text-white">
+        <div className="glass-panel rounded-2xl px-8 py-6 text-xl font-semibold">Loading Admin Panel...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-900 via-black to-gray-950 text-white">
-      <div className="container mx-auto px-4 py-12">
+    <div className="page-shell min-h-screen text-white">
+      <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6">
         {/* Header */}
-        <div className="mb-12 text-center">
-          <h1 className="text-5xl font-bold bg-linear-to-r from-red-500 to-purple-500 bg-clip-text text-transparent">
+        <div className="glass-panel mb-10 rounded-3xl px-6 py-8 text-center sm:px-8">
+          <h1 className="text-5xl font-bold theme-gradient-text">
             Admin Dashboard
           </h1>
-          <p className="text-gray-400 mt-3 text-lg">
+          <p className="mt-3 text-lg text-zinc-300">
             Manage theatres, screens, showtimes & bookings
           </p>
         </div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+        <div className="mb-12 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
           {[
             {
               title: 'Theatres',
               value: stats.totalTheatres,
-              icon: <Building2 className="h-10 w-10 text-blue-300" />,
-              color: 'from-blue-500/20 to-blue-900/40',
+              icon: <Building2 className="h-10 w-10 text-red-200" />,
+              color: 'from-red-500/20 to-red-900/25',
             },
             {
               title: 'Screens',
               value: stats.totalScreens,
-              icon: <Film className="h-10 w-10 text-green-300" />,
-              color: 'from-green-500/20 to-green-900/40',
+              icon: <Film className="h-10 w-10 text-red-200" />,
+              color: 'from-red-500/15 to-red-900/20',
             },
             {
               title: 'Active Showtimes',
               value: stats.totalShowtimes,
-              icon: <Calendar className="h-10 w-10 text-purple-300" />,
-              color: 'from-purple-500/20 to-purple-900/40',
+              icon: <Calendar className="h-10 w-10 text-red-200" />,
+              color: 'from-red-500/20 to-red-900/25',
             },
             {
               title: 'Total Bookings',
               value: stats.totalBookings,
-              icon: <Ticket className="h-10 w-10 text-red-300" />,
-              color: 'from-red-500/20 to-red-900/40',
+              icon: <Ticket className="h-10 w-10 text-red-200" />,
+              color: 'from-red-500/20 to-red-900/25',
             },
           ].map((stat, i) => (
             <div
               key={i}
-              className={`p-6 rounded-2xl backdrop-blur-xl bg-linear-to-br ${stat.color} border border-white/10 shadow-xl hover:shadow-2xl hover:scale-[1.03] transition-all duration-500`}
+              className={`glass-panel rounded-2xl bg-linear-to-br p-6 transition-all duration-300 hover:-translate-y-0.5 ${stat.color}`}
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-300 text-sm mb-1">{stat.title}</p>
+                  <p className="mb-1 text-sm text-zinc-300">{stat.title}</p>
                   <p className="text-4xl font-bold text-white">{stat.value}</p>
                 </div>
                 <div className="opacity-80">{stat.icon}</div>
@@ -91,38 +91,38 @@ export default function AdminDashboard() {
           {[
             {
               href: '/admin/theatres',
-              icon: <Building2 className="h-14 w-14 mx-auto mb-4 text-blue-400" />,
+              icon: <Building2 className="mx-auto mb-4 h-14 w-14 text-red-300" />,
               title: 'Manage Theatres',
               desc: 'Add, edit, or remove theatres and screens',
-              color: 'from-blue-600/20 to-blue-900/40',
+              color: 'from-red-500/15 to-red-900/20',
             },
             {
               href: '/admin/showtimes',
-              icon: <Calendar className="h-14 w-14 mx-auto mb-4 text-purple-400" />,
+              icon: <Calendar className="mx-auto mb-4 h-14 w-14 text-red-300" />,
               title: 'Manage Showtimes',
               desc: 'Create and manage movie showtimes',
-              color: 'from-purple-600/20 to-purple-900/40',
+              color: 'from-red-500/20 to-red-900/25',
             },
             {
               href: '/admin/bookings',
-              icon: <Ticket className="h-14 w-14 mx-auto mb-4 text-red-400" />,
+              icon: <Ticket className="mx-auto mb-4 h-14 w-14 text-red-300" />,
               title: 'View Bookings',
               desc: 'Monitor and manage all bookings',
-              color: 'from-red-600/20 to-red-900/40',
+              color: 'from-red-500/20 to-red-900/25',
             },
           ].map((item, i) => (
             <Link
               key={i}
               href={item.href}
-              className={`rounded-2xl p-8 text-center backdrop-blur-xl bg-linear-to-br ${item.color} border border-white/10 hover:border-white/30 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 group`}
+              className={`glass-panel group rounded-2xl bg-linear-to-br p-8 text-center transition-all duration-300 hover:-translate-y-1 ${item.color}`}
             >
-              <div className="group-hover:scale-110 transition-transform duration-500">
+              <div className="transition-transform duration-300 group-hover:scale-105">
                 {item.icon}
               </div>
               <h3 className="text-2xl font-semibold mb-2 mt-2 text-white">
                 {item.title}
               </h3>
-              <p className="text-gray-400">{item.desc}</p>
+              <p className="text-zinc-300">{item.desc}</p>
             </Link>
           ))}
         </div>

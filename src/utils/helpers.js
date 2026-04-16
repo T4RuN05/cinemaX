@@ -140,9 +140,9 @@ export function isToday(date) {
  * Get movie rating color
  */
 export function getRatingColor(rating) {
-  if (rating >= 8) return 'text-green-500';
-  if (rating >= 6) return 'text-yellow-500';
-  return 'text-red-500';
+  if (rating >= 8) return 'text-red-100';
+  if (rating >= 6) return 'text-red-200';
+  return 'text-red-300';
 }
 
 /**

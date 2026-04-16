@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { moviesApi } from '@/lib/api';
 
 export function useMovies() {
@@ -50,13 +50,7 @@ export function useMovieDetails(movieId) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (movieId) {
-      fetchMovieDetails();
-    }
-  }, [movieId]);
-
-  const fetchMovieDetails = async () => {
+  const fetchMovieDetails = useCallback(async () => {
     try {
       setLoading(true);
       const response = await moviesApi.getDetails(movieId);
@@ -68,7 +62,13 @@ export function useMovieDetails(movieId) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [movieId]);
+
+  useEffect(() => {
+    if (movieId) {
+      fetchMovieDetails();
+    }
+  }, [fetchMovieDetails, movieId]);
 
   return {
     movie,
@@ -83,15 +83,7 @@ export function useMovieSearch(query) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (query && query.length > 2) {
-      searchMovies();
-    } else {
-      setResults([]);
-    }
-  }, [query]);
-
-  const searchMovies = async () => {
+  const searchMovies = useCallback(async () => {
     try {
       setLoading(true);
       const response = await moviesApi.search(query);
@@ -103,7 +95,15 @@ export function useMovieSearch(query) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [query]);
+
+  useEffect(() => {
+    if (query && query.length > 2) {
+      searchMovies();
+    } else {
+      setResults([]);
+    }
+  }, [query, searchMovies]);
 
   return {
     results,

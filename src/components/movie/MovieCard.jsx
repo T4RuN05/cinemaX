@@ -19,10 +19,10 @@ export default function MovieCard({ movie }) {
       : movie.vote_average || 'N/A';
 
   return (
-    <article className="relative bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition-all transform hover:-translate-y-1 group cursor-pointer">
+    <article className="group relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 shadow-lg backdrop-blur-xl transition-all hover:-translate-y-1 hover:shadow-2xl">
       <Link href={`/movies/${movie.id}`} className="block h-full">
         {/* Movie Poster */}
-        <figure className="relative h-[400px] w-full overflow-hidden">
+        <figure className="relative h-100 w-full overflow-hidden">
           <Image
             src={imageUrl}
             alt={movie.title}
@@ -38,26 +38,26 @@ export default function MovieCard({ movie }) {
         </figure>
 
         {/* Movie Info */}
-        <div className="p-4 bg-white">
-          <h3 className="font-bold text-lg text-gray-900 truncate mb-1">
+        <div className="p-4">
+          <h3 className="mb-1 truncate text-lg font-bold text-zinc-100">
             {movie.title}
           </h3>
-          <p className="text-sm text-gray-500 mb-2 truncate italic">
+          <p className="mb-2 truncate text-sm italic text-zinc-400">
             {movie.genre || 'Action, Adventure'}
           </p>
 
-          <div className="flex items-center justify-between text-sm text-gray-600">
+          <div className="flex items-center justify-between text-sm text-zinc-300">
             <div className="flex items-center">
-              <Star className="h-4 w-4 text-yellow-400 mr-1" />
+              <Star className="h-4 w-4 text-red-300 mr-1" />
               <span>{rating}</span>
             </div>
             {releaseYear !== 'N/A' && (
-              <span className="font-medium text-gray-700">{releaseYear}</span>
+              <span className="font-medium text-zinc-300">{releaseYear}</span>
             )}
           </div>
 
           <button
-            className="w-full mt-4 bg-red-500 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-red-600 active:scale-[0.98] transition-all"
+            className="cta-primary mt-4 w-full py-2.5 text-sm"
             aria-label={`Book tickets for ${movie.title}`}
           >
             Book Tickets

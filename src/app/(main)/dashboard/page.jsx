@@ -50,67 +50,49 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-b from-black via-gray-950 to-gray-900">
+      <div className="page-shell flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-red-500 mx-auto mb-4 drop-shadow-[0_0_15px_rgba(255,0,0,0.6)]" />
-          <p className="text-gray-400 text-lg">Loading movies...</p>
+          <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-red-400" />
+          <p className="text-zinc-300">Loading movies...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-linear-to-b from-black via-gray-950 to-gray-900 text-white">
-      {/* Background glow gradients */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,0,0,0.25),transparent_70%)]"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(255,50,50,0.2),transparent_80%)]"></div>
+    <div className="page-shell min-h-screen text-white">
+      <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6">
+        <section className="glass-panel rounded-3xl px-6 py-8 sm:px-10">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-300/30 bg-red-500/10 px-4 py-1.5 text-sm font-semibold text-red-200">
+            <Sparkles className="h-4 w-4" />
+            Now Showing
+          </div>
 
-      {/* Hero Section */}
-      <div className="relative z-10 container mx-auto px-6 py-20 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-red-400/30 rounded-full mb-5 backdrop-blur-md">
-          <Sparkles className="h-4 w-4 text-red-400" />
-          <span className="text-sm font-semibold text-red-300 tracking-wide">Now Showing</span>
-        </div>
+          <h1 className="theme-heading text-5xl font-bold sm:text-6xl">Choose a Movie, Book a Seat</h1>
+          <p className="theme-subtext mt-4 max-w-2xl text-base sm:text-lg">
+            Browse available movies with active showtimes and move straight to booking in one flow.
+          </p>
+        </section>
 
-        <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight bg-linear-to-r from-red-500 via-pink-600 to-red-800 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(255,0,0,0.25)]">
-          Book Your Favorite Movies
-        </h1>
-
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12">
-          Explore top-rated films, view live seat availability, and book your next cinema experience in seconds.
-        </p>
-      </div>
-
-      {/* Movies Section */}
-      <div className="relative z-10 container mx-auto px-6 pb-24">
-        {movies.length === 0 ? (
-          <div className="text-center py-16 bg-white/10 backdrop-blur-lg rounded-3xl border border-white/10 shadow-2xl">
-            <Film className="h-20 w-20 mx-auto mb-6 text-red-500 drop-shadow-[0_0_15px_rgba(255,0,0,0.6)]" />
-            <h2 className="text-3xl font-bold text-white mb-3">No Movies Available</h2>
-            <p className="text-gray-400 mb-6">
-              Check back soon — new releases are coming to your city!
+        <section className="glass-panel mt-8 rounded-3xl p-6 sm:p-8">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-3xl font-bold theme-gradient-text">Available Movies</h2>
+            <p className="text-sm text-zinc-400">
+              {movies.length} {movies.length === 1 ? 'movie' : 'movies'}
             </p>
-            <div className="inline-block px-8 py-3 bg-linear-to-r from-gray-800 to-gray-700 rounded-xl border border-gray-600 text-gray-300">
-              Coming Soon
-            </div>
           </div>
-        ) : (
-          <div className="bg-white/5 backdrop-blur-xl p-10 rounded-3xl shadow-[0_0_40px_rgba(255,0,0,0.15)] border border-white/10">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold bg-linear-to-r from-red-500 via-pink-600 to-red-700 bg-clip-text text-transparent">
-                All Movies
-              </h2>
-              <div className="text-sm text-gray-400">
-                {movies.length} {movies.length === 1 ? 'movie' : 'movies'} available
-              </div>
-            </div>
-            <MovieGrid movies={movies} />
-          </div>
-        )}
-      </div>
 
-      {/* Ambient Gradient Overlay */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-linear-to-t from-black via-gray-950 to-transparent pointer-events-none"></div>
+          {movies.length === 0 ? (
+            <div className="glass-card rounded-2xl py-14 text-center">
+              <Film className="mx-auto mb-4 h-14 w-14 text-red-300" />
+              <p className="text-xl font-semibold text-zinc-200">No movies available right now</p>
+              <p className="mt-2 text-zinc-400">Add showtimes from admin to make movies visible here.</p>
+            </div>
+          ) : (
+            <MovieGrid movies={movies} />
+          )}
+        </section>
+      </div>
     </div>
   );
 }

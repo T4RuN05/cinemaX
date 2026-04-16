@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -53,6 +53,7 @@ export const theatresApi = {
 
 // Showtimes API
 export const showtimesApi = {
+  getAll: (params) => api.get('/showtimes', { params }),
   getByMovie: (movieId, params) => 
     api.get(`/showtimes/movie/${movieId}`, { params }),
   getById: (id) => api.get(`/showtimes/${id}`),
@@ -67,7 +68,6 @@ export const bookingsApi = {
   createPaymentIntent: (data) => api.post('/bookings/create-payment-intent', data),
   confirm: (data) => api.post('/bookings/confirm', data),
   getMyBookings: () => api.get('/bookings/my-bookings'),
-  getById: (id) => api.get(`/bookings/${id}`),
   cancel: (id) => api.put(`/bookings/${id}/cancel`),
   getAll: (params) => api.get('/bookings', { params }),
 };

@@ -49,7 +49,7 @@ export default function PaymentForm({ amount, onSuccess, onError }) {
       const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: window.location.origin + '/booking-success',
+          return_url: window.location.origin + '/my-bookings',
         },
         redirect: 'if_required',
       });
@@ -78,29 +78,29 @@ export default function PaymentForm({ amount, onSuccess, onError }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Amount Display */}
-      <div className="bg-linear-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
+      <div className="glass-card rounded-lg border-red-300/20 bg-red-500/10 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Total Amount</p>
-            <p className="text-3xl font-bold text-gray-900">₹{amount}</p>
+            <p className="mb-1 text-sm text-zinc-300">Total Amount</p>
+            <p className="text-3xl font-bold text-red-100">₹{amount}</p>
           </div>
-          <ShieldCheck className="h-12 w-12 text-blue-500" />
+          <ShieldCheck className="h-12 w-12 text-red-300" />
         </div>
       </div>
 
       {/* Loading State */}
       {!stripe && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="glass-card rounded-lg p-4">
           <div className="flex items-center gap-3">
-            <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
-            <p className="text-sm text-blue-700">Loading payment system...</p>
+            <Loader2 className="h-5 w-5 animate-spin text-red-300" />
+            <p className="text-sm text-zinc-300">Loading payment system...</p>
           </div>
         </div>
       )}
 
       {/* Payment Element */}
       {stripe && (
-        <div className="bg-white p-4 rounded-lg border-2 border-gray-200">
+        <div className="glass-card rounded-lg p-4">
           <PaymentElement 
             onReady={() => {
               console.log('✅ Payment Element ready');
@@ -116,11 +116,11 @@ export default function PaymentForm({ amount, onSuccess, onError }) {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+        <div className="rounded border-l-4 border-red-400 bg-red-500/12 p-4">
           <div className="flex">
-            <AlertCircle className="h-5 w-5 text-red-400" />
+            <AlertCircle className="h-5 w-5 text-red-300" />
             <div className="ml-3">
-              <p className="text-sm text-red-700">{error}</p>
+              <p className="text-sm text-red-100">{error}</p>
             </div>
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function PaymentForm({ amount, onSuccess, onError }) {
       <button
         type="submit"
         disabled={!stripe || !ready || processing}
-        className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-linear-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition font-semibold text-lg shadow-lg"
+        className="cta-primary w-full gap-3 px-6 py-4 text-lg disabled:cursor-not-allowed disabled:opacity-55"
       >
         {processing ? (
           <>
@@ -151,18 +151,18 @@ export default function PaymentForm({ amount, onSuccess, onError }) {
       </button>
 
       {/* Test Card Info */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-        <p className="text-xs font-semibold text-yellow-800 mb-2">🧪 Test Mode - Use Test Card:</p>
-        <div className="text-xs text-yellow-700 space-y-1 font-mono">
-          <p>Card: <span className="bg-yellow-100 px-2 py-0.5 rounded">4242 4242 4242 4242</span></p>
-          <p>Expiry: <span className="bg-yellow-100 px-2 py-0.5 rounded">12/34</span></p>
-          <p>CVC: <span className="bg-yellow-100 px-2 py-0.5 rounded">123</span></p>
-          <p>ZIP: <span className="bg-yellow-100 px-2 py-0.5 rounded">12345</span></p>
+      <div className="glass-card rounded-lg border-red-300/20 p-4">
+        <p className="mb-2 text-xs font-semibold text-red-100">Test Mode - Use Test Card:</p>
+        <div className="space-y-1 font-mono text-xs text-zinc-300">
+          <p>Card: <span className="rounded bg-black/30 px-2 py-0.5">4242 4242 4242 4242</span></p>
+          <p>Expiry: <span className="rounded bg-black/30 px-2 py-0.5">12/34</span></p>
+          <p>CVC: <span className="rounded bg-black/30 px-2 py-0.5">123</span></p>
+          <p>ZIP: <span className="rounded bg-black/30 px-2 py-0.5">12345</span></p>
         </div>
       </div>
 
       {/* Security Badge */}
-      <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+      <div className="flex items-center justify-center gap-2 text-xs text-zinc-400">
         <ShieldCheck className="h-4 w-4" />
         <span>Secured by Stripe • SSL Encrypted</span>
       </div>

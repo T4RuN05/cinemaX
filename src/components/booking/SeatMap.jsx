@@ -1,10 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { Clock } from 'lucide-react';
-
-export default function SeatMap({ seats, onSeatSelect, selectedSeats, showtimes }) {
-  const [selectedTime, setSelectedTime] = useState(showtimes?.[0]?._id || null);
+export default function SeatMap({ seats, onSeatSelect, selectedSeats }) {
 
   const rows = {};
   seats.forEach((seat) => {
@@ -34,13 +30,7 @@ export default function SeatMap({ seats, onSeatSelect, selectedSeats, showtimes 
   };
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden flex flex-col items-center justify-center px-6 py-10">
-      {/* Background gradient glows */}
-      <div className="absolute inset-0 bg-linear-to-b from-black via-black to-red-950/30" />
-      <div className="absolute top-0 left-0 w-96 h-96 bg-red-800/20 rounded-full blur-3xl opacity-30 animate-pulse" />
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-red-900/20 rounded-full blur-3xl opacity-40" />
-
-
+    <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/20 px-6 py-10 text-white">
       {/* Seat Selection Section */}
       <div className="z-10 text-center">
         <h1 className="text-3xl font-bold mb-10 tracking-wide">Select Your Seat</h1>
@@ -63,7 +53,7 @@ export default function SeatMap({ seats, onSeatSelect, selectedSeats, showtimes 
                     onClick={() => handleSeatClick(seat)}
                     disabled={seat.status !== 'available'}
                     title={`${seat.seatNumber} - ${seat.type}`}
-                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-semibold transition-all duration-200 ${getSeatColor(
+                    className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold transition-all duration-200 ${getSeatColor(
                       seat
                     )}`}
                   >
@@ -76,7 +66,7 @@ export default function SeatMap({ seats, onSeatSelect, selectedSeats, showtimes 
         </div>
 
         {/* Seat Legend */}
-        <div className="mt-10 flex flex-wrap gap-5 justify-center text-sm text-gray-400">
+        <div className="mt-10 flex flex-wrap justify-center gap-5 text-sm text-zinc-400">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 border border-red-400/50 rounded-lg" />
             <span>Available</span>
@@ -91,7 +81,6 @@ export default function SeatMap({ seats, onSeatSelect, selectedSeats, showtimes 
           </div>
         </div>
 
-        
       </div>
     </div>
   );

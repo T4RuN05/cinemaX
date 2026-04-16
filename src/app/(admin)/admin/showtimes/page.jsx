@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { showtimesApi, theatresApi } from '@/lib/api';
-import { Calendar, Clock, Edit, Trash2, Plus, Search, Filter, Loader2 } from 'lucide-react';
+import { Calendar, Clock, Trash2, Plus, Search, Filter, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function AdminShowtimesPage() {
@@ -28,23 +28,14 @@ export default function AdminShowtimesPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const theatresResponse = await theatresApi.getAll();
+      const [theatresResponse, showtimesResponse] = await Promise.all([
+        theatresApi.getAll(),
+        showtimesApi.getAll(),
+      ]);
+
       setTheatres(theatresResponse.data.data || []);
 
-      const movieIds = [278, 238, 240, 424, 19404, 129, 155, 497];
-      const allShowtimes = [];
-
-      for (const movieId of movieIds) {
-        try {
-          const response = await showtimesApi.getByMovie(movieId);
-          if (response.data.data) {
-            allShowtimes.push(...response.data.data);
-          }
-        } catch (error) {
-          console.log(`No showtimes for movie ${movieId}`);
-        }
-      }
-
+      const allShowtimes = showtimesResponse.data.data || [];
       allShowtimes.sort((a, b) => {
         const dateA = new Date(a.showDate);
         const dateB = new Date(b.showDate);
@@ -77,8 +68,8 @@ export default function AdminShowtimesPage() {
 
   if (!isLoaded || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-zinc-900 via-zinc-800 to-black">
-        <Loader2 className="h-12 w-12 animate-spin text-red-500" />
+      <div className="page-shell flex min-h-screen items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-red-300" />
       </div>
     );
   }
@@ -103,18 +94,18 @@ export default function AdminShowtimesPage() {
   }, {});
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-zinc-900 via-zinc-800 to-black text-white">
-      <div className="container mx-auto px-4 py-8 backdrop-blur-lg">
+    <div className="page-shell min-h-screen text-white">
+      <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-4xl font-bold text-white drop-shadow-lg">Manage Showtimes</h1>
-            <p className="text-gray-400 mt-2">Total: {filteredShowtimes.length} showtimes</p>
+          <div className="glass-panel rounded-2xl px-6 py-5">
+            <h1 className="text-4xl font-bold theme-gradient-text">Manage Showtimes</h1>
+            <p className="mt-2 text-zinc-300">Total: {filteredShowtimes.length} showtimes</p>
           </div>
 
           <button
             onClick={() => router.push('/admin/showtimes/create')}
-            className="flex items-center gap-2 px-6 py-3 bg-red-500/80 hover:bg-red-500 rounded-lg text-white font-semibold shadow-lg transition-transform hover:scale-105"
+            className="cta-primary flex items-center gap-2 px-6 py-3"
           >
             <Plus className="h-5 w-5" />
             Add Showtime
@@ -122,7 +113,7 @@ export default function AdminShowtimesPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 mb-6 shadow-lg">
+        <div className="glass-panel mb-6 rounded-2xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Search */}
             <div className="relative">
@@ -132,7 +123,7 @@ export default function AdminShowtimesPage() {
                 placeholder="Search by movie or theatre..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-transparent border border-white/20 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-white placeholder-gray-400"
+                className="input-glass pl-10"
               />
             </div>
 
@@ -142,7 +133,7 @@ export default function AdminShowtimesPage() {
               <select
                 value={selectedTheatre}
                 onChange={(e) => setSelectedTheatre(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-transparent border border-white/20 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-white appearance-none"
+                className="input-glass appearance-none pl-10"
               >
                 <option value="all" className="bg-zinc-800 text-white">
                   All Theatres
@@ -161,7 +152,7 @@ export default function AdminShowtimesPage() {
               <select
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-transparent border border-white/20 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-white appearance-none"
+                className="input-glass appearance-none pl-10"
               >
                 <option value="all" className="bg-zinc-800 text-white">
                   All Dates
@@ -178,13 +169,13 @@ export default function AdminShowtimesPage() {
 
         {/* Showtimes Grouped by Date */}
         {Object.keys(showtimesByDate).length === 0 ? (
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-12 text-center">
+          <div className="glass-panel rounded-2xl p-12 text-center">
             <Calendar className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-            <p className="text-xl text-gray-300 mb-2">No showtimes found</p>
-            <p className="text-gray-400 mb-4">Try adjusting filters or create a new showtime</p>
+            <p className="mb-2 text-xl text-zinc-200">No showtimes found</p>
+            <p className="mb-4 text-zinc-400">Try adjusting filters or create a new showtime</p>
             <button
               onClick={() => router.push('/admin/showtimes/create')}
-              className="px-6 py-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg transition"
+              className="cta-primary px-6 py-2"
             >
               Create Showtime
             </button>
@@ -194,7 +185,7 @@ export default function AdminShowtimesPage() {
             {Object.entries(showtimesByDate).map(([date, dateShowtimes]) => (
               <div
                 key={date}
-                className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg overflow-hidden"
+                className="glass-panel overflow-hidden rounded-2xl"
               >
                 {/* Date Header */}
                 <div className="bg-linear-to-r from-red-500/80 to-red-600/80 px-6 py-4">
@@ -241,7 +232,7 @@ export default function AdminShowtimesPage() {
                           <td className="px-6 py-4 text-sm">{showtime.theatreId?.name || 'N/A'}</td>
                           <td className="px-6 py-4 text-sm">{showtime.screenId?.name || 'N/A'}</td>
                           <td className="px-6 py-4 text-sm">
-                            <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold">
+                            <span className="rounded-full border border-red-300/25 bg-red-500/10 px-2 py-1 text-xs font-semibold text-red-200">
                               {showtime.format}
                             </span>
                           </td>
@@ -251,8 +242,8 @@ export default function AdminShowtimesPage() {
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-semibold ${
                                 showtime.isActive
-                                  ? 'bg-green-500/20 text-green-300'
-                                  : 'bg-red-500/20 text-red-300'
+                                  ? 'bg-red-500/20 text-red-100'
+                                  : 'bg-zinc-600/25 text-zinc-200'
                               }`}
                             >
                               {showtime.isActive ? 'Active' : 'Inactive'}
@@ -260,13 +251,6 @@ export default function AdminShowtimesPage() {
                           </td>
                           <td className="px-6 py-4 text-sm text-right">
                             <div className="flex justify-end gap-2">
-                              <button
-                                onClick={() => router.push(`/admin/showtimes/${showtime._id}/edit`)}
-                                className="p-2 text-blue-400 hover:text-blue-200 transition"
-                                title="Edit"
-                              >
-                                <Edit className="h-4 w-4" />
-                              </button>
                               <button
                                 onClick={() => handleDelete(showtime._id)}
                                 className="p-2 text-red-400 hover:text-red-200 transition"
